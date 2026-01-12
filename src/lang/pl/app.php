@@ -3,12 +3,33 @@
 return [
 
     'common' => [
-        'dashboard' => 'Panel główny',
+        'dashboard' => 'Panel',
     ],
 
     'product' => [
         'title' => 'Produkty',
-        'price' => 'Cena',
+
+        'fields' => [
+            'lp' => 'Lp.',
+            'name' => 'Nazwa',
+            'price' => 'Cena',
+            'stock_quantity' => 'Ilość',
+            'actions' => 'Akcje',
+        ],
+
+        'filters' => [
+            'name' => 'Nazwa',
+            'price' => 'Cena',
+            'stock_quantity' => 'Ilość',
+        ],
+
+        'actions' => [
+            'create' => 'Dodaj produkt',
+            'edit' => 'Edytuj',
+            'delete' => 'Usuń',
+        ],
+
+        'empty' => 'Brak produktów do wyświetlenia.',
     ],
 
     'cart' => [

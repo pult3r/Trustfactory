@@ -8,7 +8,28 @@ return [
 
     'product' => [
         'title' => 'Products',
-        'price' => 'Price',
+
+        'fields' => [
+            'lp' => '#',
+            'name' => 'Name',
+            'price' => 'Price',
+            'stock_quantity' => 'Quantity',
+            'actions' => 'Actions',
+        ],
+
+        'filters' => [
+            'name' => 'Name',
+            'price' => 'Price',
+            'stock_quantity' => 'Quantity',
+        ],
+
+        'actions' => [
+            'create' => 'Add product',
+            'edit' => 'Edit',
+            'delete' => 'Delete',
+        ],
+
+        'empty' => 'No products found.',
     ],
 
     'cart' => [
