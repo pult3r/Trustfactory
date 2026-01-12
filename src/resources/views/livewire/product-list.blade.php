@@ -1,16 +1,31 @@
 <div>
-    <h2 class="text-xl font-semibold mb-4">Products</h2>
+    <h2 class="text-xl font-semibold mb-4">
+        {{ __('app.product.title') }}
+    </h2>
 
     <div class="space-y-4">
-        <div class="p-4 border rounded">
-            <p class="font-medium">Product name</p>
-            <p class="text-sm text-gray-600">$0.00</p>
+        @forelse ($products as $product)
+            <div class="flex justify-between items-center border p-4 rounded">
+                <div>
+                    <p class="font-medium">
+                        {{ $product->name }}
+                    </p>
+                    <p class="text-sm text-gray-600">
+                        {{ __('app.product.price') }}: {{ $product->price }}
+                    </p>
+                </div>
 
-            <button
-                class="mt-2 px-3 py-1 bg-blue-600 text-white rounded"
-            >
-                Add to cart
-            </button>
-        </div>
+                <button
+                    wire:click="addToCart({{ $product->id }})"
+                    class="px-3 py-1 bg-indigo-600 text-white rounded text-sm"
+                >
+                    {{ __('app.cart.add') }}
+                </button>
+            </div>
+        @empty
+            <p class="text-gray-500">
+                {{ __('app.product.empty') }}
+            </p>
+        @endforelse
     </div>
 </div>

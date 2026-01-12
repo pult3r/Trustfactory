@@ -4,22 +4,30 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration {
+return new class extends Migration
+{
     public function up(): void
     {
         Schema::create('cart_items', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('cart_id')
-                  ->constrained()
-                  ->cascadeOnDelete();
+
+            // 🔑 OWNER OF CART ITEM
+            $table->foreignId('user_id')
+                ->constrained()
+                ->cascadeOnDelete();
+
+            // 🔑 PRODUCT
             $table->foreignId('product_id')
-                  ->constrained()
-                  ->restrictOnDelete();
-            $table->unsignedInteger('quantity');
-            $table->decimal('price_snapshot', 10, 2);
+                ->constrained()
+                ->cascadeOnDelete();
+
+            // 🔢 QUANTITY
+            $table->unsignedInteger('quantity')->default(1);
+
             $table->timestamps();
 
-            $table->unique(['cart_id', 'product_id']);
+            // Prevent duplicate product per user
+            $table->unique(['user_id', 'product_id']);
         });
     }
 

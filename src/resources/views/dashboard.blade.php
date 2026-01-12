@@ -1,11 +1,13 @@
 <x-app-layout>
-    <div class="grid grid-cols-3 gap-6">
-        <div class="col-span-2">
-            <livewire:product-list />
-        </div>
+    <x-slot name="header">
+        <div class="flex justify-between items-center">
+            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+                {{ __('app.common.dashboard') }}
+            </h2>
 
-        <div>
-            <livewire:cart-panel />
+            <livewire:language-switcher />
         </div>
-    </div>
+    </x-slot>
+
+    <livewire:dashboard-page />
 </x-app-layout>

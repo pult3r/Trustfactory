@@ -86,6 +86,20 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Available Locales (ADDED – Trustfactory i18n)
+    |--------------------------------------------------------------------------
+    |
+    | List of locales supported by the application.
+    | Adding a new language requires ONLY:
+    | - new lang/{locale}.php file
+    | - adding locale code to AVAILABLE_LOCALES in .env
+    |
+    */
+
+    'available_locales' => explode(',', env('AVAILABLE_LOCALES', 'en')),
+
+    /*
+    |--------------------------------------------------------------------------
     | Encryption Key
     |--------------------------------------------------------------------------
     |
