@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire;
+namespace App\Livewire\Products;
 
 use App\Models\Product;
 use Livewire\Component;
@@ -54,7 +54,7 @@ class ProductTable extends Component
 
     public function render()
     {
-        return view('livewire.product-table', [
+        return view('livewire.products.product-table', [
             'products' => Product::query()
                 ->when($this->search !== '', fn ($q) =>
                     $q->where('name', 'like', "%{$this->search}%")

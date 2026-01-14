@@ -6,7 +6,7 @@
             {{-- LEFT: Products --}}
             <div class="md:col-span-2">
                 <div class="bg-white shadow rounded-lg p-6">
-                    <livewire:product-table />
+                    <livewire:products.product-table />
                 </div>
             </div>
 
@@ -14,7 +14,7 @@
             <div class="md:col-span-1">
                 <div class="sticky top-6">
                     <div class="bg-white shadow rounded-lg p-6">
-                        <livewire:cart-panel />
+                        <livewire:cart.cart-panel />
                     </div>
                 </div>
             </div>

@@ -1,15 +1,10 @@
 <?php
 
-use App\Livewire\DashboardPage;
 use Illuminate\Support\Facades\Route;
-
-Route::get('/', function () {
-    return redirect('/dashboard');
-});
+use App\Livewire\Dashboard\DashboardPage;
 
 Route::middleware(['auth'])->group(function () {
-    Route::get('/dashboard', DashboardPage::class)
-        ->name('dashboard');
+    Route::get('/dashboard', DashboardPage::class)->name('dashboard');
 });
 
 require __DIR__.'/auth.php';

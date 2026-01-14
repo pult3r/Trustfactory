@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire;
+namespace App\Livewire\Cart;
 
 use App\Models\CartItem;
 use Illuminate\Support\Collection;
@@ -26,7 +26,7 @@ class CartPanel extends Component
             ->where('user_id', Auth::id())
             ->get();
 
-        return view('livewire.cart-panel');
+        return view('livewire.cart.cart-panel');
     }
 
     public function remove(int $itemId): void

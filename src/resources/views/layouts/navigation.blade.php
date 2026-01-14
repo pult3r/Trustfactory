@@ -9,7 +9,7 @@
         {{-- Right --}}
         <div class="flex items-center gap-4">
             {{-- Language switcher --}}
-            <livewire:language-switcher />
+            <livewire:language.language-switcher />
 
             {{-- Logout --}}
             <form method="POST" action="/logout">

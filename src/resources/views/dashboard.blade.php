@@ -5,9 +5,9 @@
                 {{ __('app.common.dashboard') }}
             </h2>
 
-            <livewire:language-switcher />
+            <livewire:language.language-switcher />
         </div>
     </x-slot>
 
-    <livewire:dashboard-page />
+    <livewire:dashboard.dashboard-page />
 </x-app-layout>

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire;
+namespace App\Livewire\Language;
 
 use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
@@ -22,22 +22,19 @@ class LanguageSwitcher extends Component
             return;
         }
 
-        // Persist locale in session
         session(['locale' => $locale]);
 
-        // Persist locale for authenticated user
         if (Auth::check()) {
             Auth::user()->update([
                 'locale' => $locale,
             ]);
         }
 
-        // Force new HTTP request so middleware can apply locale
         return redirect(request()->header('Referer'));
     }
 
     public function render()
     {
-        return view('livewire.language-switcher');
+        return view('livewire.language.language-switcher');
     }
 }
