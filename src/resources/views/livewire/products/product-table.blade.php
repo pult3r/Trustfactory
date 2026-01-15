@@ -36,7 +36,10 @@
     </div>
 
     {{-- Table --}}
-    <div class="relative flex-1 overflow-auto rounded border">
+    <div
+        class="relative flex-1 overflow-auto rounded border"
+        wire:loading.class="opacity-70"
+    >
         {{-- Loading overlay --}}
         <div
             wire:loading.delay
@@ -82,7 +85,7 @@
                     >
                         {{ __('app.product.fields.stock_quantity') }}
                         @if($sortField === 'stock_quantity')
-                            {{ $this->sortDirection === 'asc' ? '▲' : '▼' }}
+                            {{ $sortDirection === 'asc' ? '▲' : '▼' }}
                         @endif
                     </th>
 
@@ -100,9 +103,9 @@
                         <input
                             type="text"
                             wire:model.live.debounce.300ms="filterName"
-                            wire:loading.attr="disabled"
+                            wire:loading.class="bg-gray-100"
                             placeholder="{{ __('app.product.filters.name') }}"
-                            class="w-full rounded border-gray-300 text-xs disabled:opacity-50"
+                            class="w-full rounded border-gray-300 text-xs"
                         />
                     </th>
 
@@ -111,9 +114,9 @@
                             type="text"
                             inputmode="decimal"
                             wire:model.live.debounce.300ms="filterPrice"
-                            wire:loading.attr="disabled"
+                            wire:loading.class="bg-gray-100"
                             placeholder="{{ __('app.product.filters.price') }}"
-                            class="w-full rounded border-gray-300 text-xs text-right disabled:opacity-50"
+                            class="w-full rounded border-gray-300 text-xs text-right"
                         />
                     </th>
 
@@ -122,9 +125,9 @@
                             type="text"
                             inputmode="numeric"
                             wire:model.live.debounce.300ms="filterStock"
-                            wire:loading.attr="disabled"
+                            wire:loading.class="bg-gray-100"
                             placeholder="{{ __('app.product.filters.stock_quantity') }}"
-                            class="w-full rounded border-gray-300 text-xs text-right disabled:opacity-50"
+                            class="w-full rounded border-gray-300 text-xs text-right"
                         />
                     </th>
 
@@ -133,67 +136,89 @@
             </thead>
 
             <tbody class="divide-y divide-gray-100 bg-white">
-                {{-- Skeleton rows --}}
-                <tr wire:loading.delay>
-                    <td colspan="6" class="px-4 py-6">
-                        <div class="space-y-2">
-                            @for ($i = 0; $i < 5; $i++)
-                                <div class="h-4 w-full animate-pulse rounded bg-gray-200"></div>
-                            @endfor
-                        </div>
-                    </td>
-                </tr>
+                @forelse($products as $i => $product)
+                    <tr>
+                        <td class="px-2 py-2">
+                            {{ ($products->currentPage() - 1) * $products->perPage() + $i + 1 }}
+                        </td>
 
-                {{-- Data rows --}}
-                <tr wire:loading.remove>
-                    @forelse($products as $i => $product)
-                        <tr>
-                            <td class="px-2 py-2">
-                                {{ ($products->currentPage() - 1) * $products->perPage() + $i + 1 }}
-                            </td>
+                        <td class="px-2 py-2">
+                            <img
+                                src="{{ $product->image_url ?: 'https://picsum.photos/40' }}"
+                                class="h-10 w-10 rounded object-cover"
+                            />
+                        </td>
 
-                            <td class="px-2 py-2">
-                                <img
-                                    src="{{ $product->image_url ?: 'https://picsum.photos/40' }}"
-                                    class="h-10 w-10 rounded object-cover"
-                                />
-                            </td>
+                        {{-- Name with highlight --}}
+                        <td class="px-2 py-2 truncate">
+                            @if($filterName !== '')
+                                {!! str_replace(
+                                    $filterName,
+                                    '<mark class="rounded bg-yellow-200 px-1">'.$filterName.'</mark>',
+                                    e($product->name)
+                                ) !!}
+                            @else
+                                {{ $product->name }}
+                            @endif
+                        </td>
 
-                            <td class="px-2 py-2 truncate">{{ $product->name }}</td>
-                            <td class="px-2 py-2 text-right">{{ number_format($product->price, 2) }}</td>
-                            <td class="px-2 py-2 text-right">{{ $product->stock_quantity }}</td>
+                        {{-- Price with highlight --}}
+                        <td class="px-2 py-2 text-right">
+                            @php $price = number_format($product->price, 2); @endphp
+                            @if($filterPrice !== '')
+                                {!! str_replace(
+                                    $filterPrice,
+                                    '<mark class="rounded bg-yellow-200 px-1">'.$filterPrice.'</mark>',
+                                    $price
+                                ) !!}
+                            @else
+                                {{ $price }}
+                            @endif
+                        </td>
 
-                            <td class="px-2 py-2 text-right space-x-2">
-                                @if($canManage)
-                                    @if($showTrashed)
-                                        <button
-                                            wire:click="restore({{ $product->id }})"
-                                            wire:loading.attr="disabled"
-                                            class="text-green-600 disabled:opacity-50"
-                                        >♻️</button>
-                                    @else
-                                        <button
-                                            wire:click="$dispatch('product.edit', {{ $product->id }})"
-                                            wire:loading.attr="disabled"
-                                        >✏️</button>
+                        {{-- Stock with highlight --}}
+                        <td class="px-2 py-2 text-right">
+                            @if($filterStock !== '')
+                                {!! str_replace(
+                                    $filterStock,
+                                    '<mark class="rounded bg-yellow-200 px-1">'.$filterStock.'</mark>',
+                                    (string) $product->stock_quantity
+                                ) !!}
+                            @else
+                                {{ $product->stock_quantity }}
+                            @endif
+                        </td>
 
-                                        <button
-                                            wire:click="delete({{ $product->id }})"
-                                            wire:loading.attr="disabled"
-                                            class="text-red-600 disabled:opacity-50"
-                                        >🗑</button>
-                                    @endif
+                        <td class="px-2 py-2 text-right space-x-2">
+                            @if($canManage)
+                                @if($showTrashed)
+                                    <button
+                                        wire:click="restore({{ $product->id }})"
+                                        wire:loading.attr="disabled"
+                                        class="text-green-600 disabled:opacity-50"
+                                    >♻️</button>
+                                @else
+                                    <button
+                                        wire:click="$dispatch('product.edit', {{ $product->id }})"
+                                        wire:loading.attr="disabled"
+                                    >✏️</button>
+
+                                    <button
+                                        wire:click="delete({{ $product->id }})"
+                                        wire:loading.attr="disabled"
+                                        class="text-red-600 disabled:opacity-50"
+                                    >🗑</button>
                                 @endif
-                            </td>
-                        </tr>
-                    @empty
-                        <tr>
-                            <td colspan="6" class="px-4 py-6 text-center text-gray-500">
-                                {{ __('app.product.empty') }}
-                            </td>
-                        </tr>
-                    @endforelse
-                </tr>
+                            @endif
+                        </td>
+                    </tr>
+                @empty
+                    <tr>
+                        <td colspan="6" class="px-4 py-6 text-center text-gray-500">
+                            {{ __('app.product.empty') }}
+                        </td>
+                    </tr>
+                @endforelse
             </tbody>
         </table>
     </div>

@@ -3,8 +3,8 @@
 namespace App\Livewire\Products;
 
 use App\Models\Product;
-use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Livewire\Attributes\On;
@@ -13,11 +13,11 @@ use Livewire\Attributes\Url;
 class ProductTable extends Component
 {
     use WithPagination;
+    use AuthorizesRequests;
 
     protected string $paginationTheme = 'tailwind';
     protected string $sessionKey = 'products.filters';
 
-    // URL state (shareable)
     #[Url]
     public bool $showTrashed = false;
 
@@ -27,7 +27,6 @@ class ProductTable extends Component
     #[Url]
     public string $sortDirection = 'asc';
 
-    // Live filters (not stored in URL)
     public string $filterName = '';
     public string $filterPrice = '';
     public string $filterStock = '';
@@ -40,8 +39,6 @@ class ProductTable extends Component
             $this->filterStock = $stored['filterStock'] ?? '';
         }
     }
-
-    // Filter updates
 
     public function updatedFilterName(): void
     {
@@ -70,11 +67,9 @@ class ProductTable extends Component
         ]);
     }
 
-    // Actions
-
     public function toggleTrash(): void
     {
-        Gate::authorize('manage-products');
+        $this->authorize('create', Product::class);
 
         $this->showTrashed = ! $this->showTrashed;
         $this->resetPage();
@@ -94,17 +89,21 @@ class ProductTable extends Component
 
     public function restore(int $id): void
     {
-        Gate::authorize('manage-products');
+        $product = Product::onlyTrashed()->findOrFail($id);
 
-        Product::onlyTrashed()->findOrFail($id)->restore();
+        $this->authorize('restore', $product);
+
+        $product->restore();
         $this->resetPage();
     }
 
     public function delete(int $id): void
     {
-        Gate::authorize('manage-products');
+        $product = Product::findOrFail($id);
 
-        Product::findOrFail($id)->delete();
+        $this->authorize('delete', $product);
+
+        $product->delete();
         $this->resetPage();
     }
 
@@ -113,8 +112,6 @@ class ProductTable extends Component
     {
         $this->resetPage();
     }
-
-    // Render
 
     public function render()
     {
@@ -130,20 +127,16 @@ class ProductTable extends Component
                     $q->where('name', 'like', "%{$this->filterName}%")
                 )
                 ->when($this->filterPrice !== '', fn ($q) =>
-                    $q->whereRaw(
-                        'CAST(price AS CHAR) LIKE ?',
-                        [$this->filterPrice . '%']
-                    )
+                    $q->whereRaw('CAST(price AS CHAR) LIKE ?', [$this->filterPrice . '%'])
                 )
                 ->when($this->filterStock !== '', fn ($q) =>
-                    $q->whereRaw(
-                        'CAST(stock_quantity AS CHAR) LIKE ?',
-                        [$this->filterStock . '%']
-                    )
+                    $q->whereRaw('CAST(stock_quantity AS CHAR) LIKE ?', [$this->filterStock . '%'])
                 )
                 ->orderBy($this->sortField, $this->sortDirection)
                 ->paginate(20),
-            'canManage' => Gate::allows('manage-products'),
+
+            'canManage' => auth()->check()
+                && auth()->user()->can('create', Product::class),
         ]);
     }
 }
