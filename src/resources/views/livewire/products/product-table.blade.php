@@ -3,28 +3,42 @@
     <div class="mb-4 flex items-center justify-between">
         <h1 class="text-xl font-semibold">
             {{ __('app.product.title') }}
+            @if($showTrashed)
+                <span class="text-sm text-gray-500">
+                    ({{ __('app.product.trash') }})
+                </span>
+            @endif
         </h1>
 
-        @if($canManage)
-            <button
-                wire:click="$dispatch('product.create')"
-                class="rounded bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700"
-            >
-                + {{ __('app.product.actions.create') }}
-            </button>
-        @endif
+        <div class="flex gap-2">
+            @if($canManage)
+                <button
+                    wire:click="toggleTrash"
+                    class="rounded border px-3 py-1 text-sm"
+                >
+                    {{ $showTrashed
+                        ? __('app.product.actions.show_active')
+                        : __('app.product.actions.show_trash') }}
+                </button>
+
+                @if(! $showTrashed)
+                    <button
+                        wire:click="$dispatch('product.create')"
+                        class="rounded bg-indigo-600 px-4 py-2 text-sm text-white"
+                    >
+                        + {{ __('app.product.actions.create') }}
+                    </button>
+                @endif
+            @endif
+        </div>
     </div>
 
     {{-- Table --}}
     <div class="flex-1 overflow-auto rounded border">
         <table class="min-w-full table-fixed divide-y divide-gray-200 text-sm">
             <thead class="bg-gray-50">
-                {{-- HEADER --}}
                 <tr>
-                    <th class="w-12 px-2 text-left">
-                        {{ __('app.product.fields.lp') }}
-                    </th>
-
+                    <th class="w-12 px-2">#</th>
                     <th class="w-16 px-2"></th>
 
                     <th
@@ -62,7 +76,7 @@
                     </th>
                 </tr>
 
-                {{-- FILTERS --}}
+                {{-- Filters --}}
                 <tr class="bg-white">
                     <th></th>
                     <th></th>
@@ -70,7 +84,7 @@
                     <th class="px-2 py-1">
                         <input
                             type="text"
-                            wire:model.live.debounce.300ms="filters.name"
+                            wire:model.live.debounce.300ms="filterName"
                             placeholder="{{ __('app.product.filters.name') }}"
                             class="w-full rounded border-gray-300 text-xs"
                         />
@@ -80,7 +94,7 @@
                         <input
                             type="text"
                             inputmode="decimal"
-                            wire:model.live.debounce.300ms="filters.price"
+                            wire:model.live.debounce.300ms="filterPrice"
                             placeholder="{{ __('app.product.filters.price') }}"
                             class="w-full rounded border-gray-300 text-xs text-right"
                         />
@@ -90,7 +104,7 @@
                         <input
                             type="text"
                             inputmode="numeric"
-                            wire:model.live.debounce.300ms="filters.stock_quantity"
+                            wire:model.live.debounce.300ms="filterStock"
                             placeholder="{{ __('app.product.filters.stock_quantity') }}"
                             class="w-full rounded border-gray-300 text-xs text-right"
                         />
@@ -101,53 +115,40 @@
             </thead>
 
             <tbody class="divide-y divide-gray-100 bg-white">
-                @forelse($products as $index => $product)
+                @forelse($products as $i => $product)
                     <tr>
-                        {{-- LP --}}
                         <td class="px-2 py-2">
-                            {{ ($products->currentPage() - 1) * $products->perPage() + $index + 1 }}
+                            {{ ($products->currentPage() - 1) * $products->perPage() + $i + 1 }}
                         </td>
 
-                        {{-- IMAGE --}}
                         <td class="px-2 py-2">
                             <img
                                 src="{{ $product->image_url ?: 'https://picsum.photos/40' }}"
-                                alt="{{ $product->name }}"
                                 class="h-10 w-10 rounded object-cover"
                             />
                         </td>
 
-                        <td class="px-2 py-2 truncate">
-                            {{ $product->name }}
-                        </td>
-
-                        <td class="px-2 py-2 text-right">
-                            {{ number_format($product->price, 2) }}
-                        </td>
-
-                        <td class="px-2 py-2 text-right">
-                            {{ $product->stock_quantity }}
-                        </td>
+                        <td class="px-2 py-2 truncate">{{ $product->name }}</td>
+                        <td class="px-2 py-2 text-right">{{ number_format($product->price, 2) }}</td>
+                        <td class="px-2 py-2 text-right">{{ $product->stock_quantity }}</td>
 
                         <td class="px-2 py-2 text-right space-x-2">
                             @if($canManage)
-                                <button
-                                    wire:click="$dispatch('product.edit', {{ $product->id }})"
-                                    class="text-indigo-600"
-                                    title="{{ __('app.product.actions.edit') }}"
-                                >
-                                    ✏️
-                                </button>
+                                @if($showTrashed)
+                                    <button
+                                        wire:click="restore({{ $product->id }})"
+                                        class="text-green-600"
+                                    >♻️</button>
+                                @else
+                                    <button
+                                        wire:click="$dispatch('product.edit', {{ $product->id }})"
+                                    >✏️</button>
 
-                                <button
-                                    wire:click="$dispatch('product.delete', {{ $product->id }})"
-                                    class="text-red-600"
-                                    title="{{ __('app.product.actions.delete') }}"
-                                >
-                                    🗑
-                                </button>
-                            @else
-                                —
+                                    <button
+                                        wire:click="delete({{ $product->id }})"
+                                        class="text-red-600"
+                                    >🗑</button>
+                                @endif
                             @endif
                         </td>
                     </tr>
