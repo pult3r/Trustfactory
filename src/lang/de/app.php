@@ -3,11 +3,14 @@
 return [
 
     'common' => [
+        'dashboard' => 'Dashboard',
+        'loading' => 'Laden...',
         'cancel' => 'Abbrechen',
     ],
 
     'product' => [
         'title' => 'Produkte',
+        'trash' => 'Papierkorb',
 
         'fields' => [
             'lp' => '#',
@@ -27,22 +30,9 @@ return [
             'create' => 'Produkt hinzufügen',
             'edit' => 'Bearbeiten',
             'delete' => 'Löschen',
-        ],
-
-        'modal' => [
-            'create' => [
-                'title' => 'Produkt erstellen',
-                'submit' => 'Erstellen',
-            ],
-            'edit' => [
-                'title' => 'Produkt bearbeiten',
-                'submit' => 'Speichern',
-            ],
-            'delete' => [
-                'title' => 'Produkt löschen',
-                'submit' => 'Löschen',
-                'confirm' => 'Möchten Sie dieses Produkt wirklich löschen?',
-            ],
+            'restore' => 'Wiederherstellen',
+            'show_trash' => 'Papierkorb anzeigen',
+            'show_active' => 'Aktive anzeigen',
         ],
 
         'empty' => 'Keine Produkte gefunden.',
@@ -50,7 +40,18 @@ return [
 
     'cart' => [
         'title' => 'Ihr Warenkorb',
-        'empty' => 'Der Warenkorb ist leer',
+        'add' => 'In den Warenkorb',
+        'remove' => 'Entfernen',
+        'empty' => 'Warenkorb ist leer',
+    ],
+
+    'auth' => [
+        'login' => 'Anmelden',
+        'register' => 'Registrieren',
+        'logout' => 'Abmelden',
+        'email' => 'E-Mail',
+        'password' => 'Passwort',
+        'confirm_password' => 'Passwort bestätigen',
     ],
 
 ];

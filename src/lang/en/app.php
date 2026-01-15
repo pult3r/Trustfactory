@@ -3,11 +3,14 @@
 return [
 
     'common' => [
+        'dashboard' => 'Dashboard',
+        'loading' => 'Loading...',
         'cancel' => 'Cancel',
     ],
 
     'product' => [
         'title' => 'Products',
+        'trash' => 'Trash',
 
         'fields' => [
             'lp' => '#',
@@ -27,30 +30,28 @@ return [
             'create' => 'Add product',
             'edit' => 'Edit',
             'delete' => 'Delete',
-        ],
-
-        'modal' => [
-            'create' => [
-                'title' => 'Create product',
-                'submit' => 'Create',
-            ],
-            'edit' => [
-                'title' => 'Edit product',
-                'submit' => 'Save',
-            ],
-            'delete' => [
-                'title' => 'Delete product',
-                'submit' => 'Delete',
-                'confirm' => 'Are you sure you want to delete this product?',
-            ],
+            'restore' => 'Restore',
+            'show_trash' => 'Show trash',
+            'show_active' => 'Show active',
         ],
 
         'empty' => 'No products found.',
     ],
 
     'cart' => [
-        'title' => 'Your cart',
+        'title' => 'Your Cart',
+        'add' => 'Add to cart',
+        'remove' => 'Remove',
         'empty' => 'Cart is empty',
+    ],
+
+    'auth' => [
+        'login' => 'Log in',
+        'register' => 'Register',
+        'logout' => 'Log out',
+        'email' => 'Email',
+        'password' => 'Password',
+        'confirm_password' => 'Confirm Password',
     ],
 
 ];
