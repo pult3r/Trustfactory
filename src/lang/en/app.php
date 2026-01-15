@@ -3,7 +3,7 @@
 return [
 
     'common' => [
-        'dashboard' => 'Dashboard',
+        'cancel' => 'Cancel',
     ],
 
     'product' => [
@@ -29,23 +29,28 @@ return [
             'delete' => 'Delete',
         ],
 
+        'modal' => [
+            'create' => [
+                'title' => 'Create product',
+                'submit' => 'Create',
+            ],
+            'edit' => [
+                'title' => 'Edit product',
+                'submit' => 'Save',
+            ],
+            'delete' => [
+                'title' => 'Delete product',
+                'submit' => 'Delete',
+                'confirm' => 'Are you sure you want to delete this product?',
+            ],
+        ],
+
         'empty' => 'No products found.',
     ],
 
     'cart' => [
-        'title' => 'Your Cart',
-        'add' => 'Add to cart',
-        'remove' => 'Remove',
+        'title' => 'Your cart',
         'empty' => 'Cart is empty',
-    ],
-
-    'auth' => [
-        'login' => 'Log in',
-        'register' => 'Register',
-        'logout' => 'Log out',
-        'email' => 'Email',
-        'password' => 'Password',
-        'confirm_password' => 'Confirm Password',
     ],
 
 ];

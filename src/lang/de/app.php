@@ -3,14 +3,14 @@
 return [
 
     'common' => [
-        'dashboard' => 'Dashboard',
+        'cancel' => 'Abbrechen',
     ],
 
     'product' => [
         'title' => 'Produkte',
 
         'fields' => [
-            'lp' => 'Nr.',
+            'lp' => '#',
             'name' => 'Name',
             'price' => 'Preis',
             'stock_quantity' => 'Menge',
@@ -29,23 +29,28 @@ return [
             'delete' => 'Löschen',
         ],
 
-        'empty' => 'Keine Produkte vorhanden.',
+        'modal' => [
+            'create' => [
+                'title' => 'Produkt erstellen',
+                'submit' => 'Erstellen',
+            ],
+            'edit' => [
+                'title' => 'Produkt bearbeiten',
+                'submit' => 'Speichern',
+            ],
+            'delete' => [
+                'title' => 'Produkt löschen',
+                'submit' => 'Löschen',
+                'confirm' => 'Möchten Sie dieses Produkt wirklich löschen?',
+            ],
+        ],
+
+        'empty' => 'Keine Produkte gefunden.',
     ],
 
     'cart' => [
-        'title' => 'Warenkorb',
-        'add' => 'In den Warenkorb',
-        'remove' => 'Entfernen',
-        'empty' => 'Warenkorb ist leer',
-    ],
-
-    'auth' => [
-        'login' => 'Anmelden',
-        'register' => 'Registrieren',
-        'logout' => 'Abmelden',
-        'email' => 'E-Mail',
-        'password' => 'Passwort',
-        'confirm_password' => 'Passwort bestätigen',
+        'title' => 'Ihr Warenkorb',
+        'empty' => 'Der Warenkorb ist leer',
     ],
 
 ];

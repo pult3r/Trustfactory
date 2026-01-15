@@ -16,7 +16,7 @@ class LanguageSwitcher extends Component
         $this->currentLocale = app()->getLocale();
     }
 
-    public function changeLocale(string $locale)
+    public function changeLocale(string $locale): void
     {
         if (! in_array($locale, $this->availableLocales, true)) {
             return;
@@ -30,7 +30,8 @@ class LanguageSwitcher extends Component
             ]);
         }
 
-        return redirect(request()->header('Referer'));
+        // ✅ Livewire v3 – poprawny reload strony
+        $this->dispatch('refresh-page');
     }
 
     public function render()

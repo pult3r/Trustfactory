@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire;
+namespace App\Livewire\Products;
 
 use App\Models\Product;
 use App\Services\CartService;
@@ -22,7 +22,7 @@ class ProductList extends Component
 
     public function render()
     {
-        return view('livewire.product-list', [
+        return view('livewire.products.product-list', [
             'products' => Product::all(),
         ]);
     }

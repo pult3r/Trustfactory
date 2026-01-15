@@ -1,6 +1,5 @@
 <div>
-    <label for="language"
-           class="sr-only">
+    <label for="language" class="sr-only">
         Language
     </label>
 
@@ -10,10 +9,7 @@
         wire:change="changeLocale($event.target.value)"
     >
         @foreach ($availableLocales as $locale)
-            <option
-                value="{{ $locale }}"
-                @selected($currentLocale === $locale)
-            >
+            <option value="{{ $locale }}" @selected($currentLocale === $locale)>
                 @switch($locale)
                     @case('en') 🇬🇧 English @break
                     @case('pl') 🇵🇱 Polski @break

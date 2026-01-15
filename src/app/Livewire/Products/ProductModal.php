@@ -3,6 +3,7 @@
 namespace App\Livewire\Products;
 
 use App\Models\Product;
+use Illuminate\Support\Facades\Gate;
 use Livewire\Component;
 use Livewire\Attributes\On;
 
@@ -20,6 +21,8 @@ class ProductModal extends Component
     #[On('product.create')]
     public function create(): void
     {
+        Gate::authorize('manage-products');
+
         $this->resetForm();
         $this->mode = 'create';
         $this->open = true;
@@ -28,6 +31,8 @@ class ProductModal extends Component
     #[On('product.edit')]
     public function edit(int $id): void
     {
+        Gate::authorize('manage-products');
+
         $product = Product::findOrFail($id);
 
         $this->productId = $product->id;
@@ -43,6 +48,8 @@ class ProductModal extends Component
     #[On('product.delete')]
     public function confirmDelete(int $id): void
     {
+        Gate::authorize('manage-products');
+
         $this->productId = $id;
         $this->mode = 'delete';
         $this->open = true;
@@ -50,12 +57,13 @@ class ProductModal extends Component
 
     public function save(): void
     {
+        Gate::authorize('manage-products');
+
         if ($this->mode === 'delete') {
             Product::findOrFail($this->productId)->delete();
 
             $this->close();
             $this->dispatch('product.saved');
-
             return;
         }
 

@@ -5,18 +5,21 @@
             {{ __('app.product.title') }}
         </h1>
 
-        <button
-            wire:click="$dispatch('product.create')"
-            class="rounded bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700"
-        >
-            + {{ __('app.product.actions.create') }}
-        </button>
+        @if($canManage)
+            <button
+                wire:click="$dispatch('product.create')"
+                class="rounded bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700"
+            >
+                + {{ __('app.product.actions.create') }}
+            </button>
+        @endif
     </div>
 
     {{-- Table --}}
     <div class="flex-1 overflow-auto rounded border">
         <table class="min-w-full table-fixed divide-y divide-gray-200 text-sm">
             <thead class="bg-gray-50">
+                {{-- HEADER --}}
                 <tr>
                     <th class="w-12 px-2 text-left">
                         {{ __('app.product.fields.lp') }}
@@ -29,8 +32,8 @@
                         class="cursor-pointer px-2 text-left font-medium"
                     >
                         {{ __('app.product.fields.name') }}
-                        @if($this->sortField === 'name')
-                            {{ $this->sortDirection === 'asc' ? '▲' : '▼' }}
+                        @if($sortField === 'name')
+                            {{ $sortDirection === 'asc' ? '▲' : '▼' }}
                         @endif
                     </th>
 
@@ -39,8 +42,8 @@
                         class="w-32 cursor-pointer px-2 text-right font-medium"
                     >
                         {{ __('app.product.fields.price') }}
-                        @if($this->sortField === 'price')
-                            {{ $this->sortDirection === 'asc' ? '▲' : '▼' }}
+                        @if($sortField === 'price')
+                            {{ $sortDirection === 'asc' ? '▲' : '▼' }}
                         @endif
                     </th>
 
@@ -49,8 +52,8 @@
                         class="w-32 cursor-pointer px-2 text-right font-medium"
                     >
                         {{ __('app.product.fields.stock_quantity') }}
-                        @if($this->sortField === 'stock_quantity')
-                            {{ $this->sortDirection === 'asc' ? '▲' : '▼' }}
+                        @if($sortField === 'stock_quantity')
+                            {{ $sortDirection === 'asc' ? '▲' : '▼' }}
                         @endif
                     </th>
 
@@ -59,7 +62,7 @@
                     </th>
                 </tr>
 
-                {{-- Filters --}}
+                {{-- FILTERS --}}
                 <tr class="bg-white">
                     <th></th>
                     <th></th>
@@ -75,8 +78,8 @@
 
                     <th class="px-2 py-1">
                         <input
-                            type="number"
-                            step="0.01"
+                            type="text"
+                            inputmode="decimal"
                             wire:model.live.debounce.300ms="filters.price"
                             placeholder="{{ __('app.product.filters.price') }}"
                             class="w-full rounded border-gray-300 text-xs text-right"
@@ -85,7 +88,8 @@
 
                     <th class="px-2 py-1">
                         <input
-                            type="number"
+                            type="text"
+                            inputmode="numeric"
                             wire:model.live.debounce.300ms="filters.stock_quantity"
                             placeholder="{{ __('app.product.filters.stock_quantity') }}"
                             class="w-full rounded border-gray-300 text-xs text-right"
@@ -104,7 +108,7 @@
                             {{ ($products->currentPage() - 1) * $products->perPage() + $index + 1 }}
                         </td>
 
-                        {{-- IMAGE (z fallbackiem) --}}
+                        {{-- IMAGE --}}
                         <td class="px-2 py-2">
                             <img
                                 src="{{ $product->image_url ?: 'https://picsum.photos/40' }}"
@@ -125,8 +129,26 @@
                             {{ $product->stock_quantity }}
                         </td>
 
-                        <td class="px-2 py-2 text-right">
-                            ✏️ 🗑
+                        <td class="px-2 py-2 text-right space-x-2">
+                            @if($canManage)
+                                <button
+                                    wire:click="$dispatch('product.edit', {{ $product->id }})"
+                                    class="text-indigo-600"
+                                    title="{{ __('app.product.actions.edit') }}"
+                                >
+                                    ✏️
+                                </button>
+
+                                <button
+                                    wire:click="$dispatch('product.delete', {{ $product->id }})"
+                                    class="text-red-600"
+                                    title="{{ __('app.product.actions.delete') }}"
+                                >
+                                    🗑
+                                </button>
+                            @else
+                                —
+                            @endif
                         </td>
                     </tr>
                 @empty

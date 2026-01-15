@@ -3,6 +3,7 @@
 namespace App\Livewire\Products;
 
 use App\Models\Product;
+use Illuminate\Support\Facades\Gate;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Livewire\Attributes\On;
@@ -17,8 +18,8 @@ class ProductTable extends Component
 
     public array $filters = [
         'name' => '',
-        'price' => null,
-        'stock_quantity' => null,
+        'price' => '',
+        'stock_quantity' => '',
     ];
 
     public string $sortField = 'name';
@@ -62,14 +63,21 @@ class ProductTable extends Component
                 ->when($this->filters['name'] !== '', fn ($q) =>
                     $q->where('name', 'like', "%{$this->filters['name']}%")
                 )
-                ->when($this->filters['price'] !== null, fn ($q) =>
-                    $q->where('price', $this->filters['price'])
+                ->when($this->filters['price'] !== '', fn ($q) =>
+                    $q->whereRaw(
+                        'CAST(price AS CHAR) LIKE ?',
+                        [$this->filters['price'] . '%']
+                    )
                 )
-                ->when($this->filters['stock_quantity'] !== null, fn ($q) =>
-                    $q->where('stock_quantity', $this->filters['stock_quantity'])
+                ->when($this->filters['stock_quantity'] !== '', fn ($q) =>
+                    $q->whereRaw(
+                        'CAST(stock_quantity AS CHAR) LIKE ?',
+                        [$this->filters['stock_quantity'] . '%']
+                    )
                 )
                 ->orderBy($this->sortField, $this->sortDirection)
                 ->paginate(20),
+            'canManage' => Gate::allows('manage-products'),
         ]);
     }
 }

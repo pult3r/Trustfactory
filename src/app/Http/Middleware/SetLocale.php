@@ -13,23 +13,18 @@ class SetLocale
     {
         $availableLocales = config('app.available_locales', []);
 
-        // 1️⃣ Session locale (highest priority)
         if (
             session()->has('locale') &&
             in_array(session('locale'), $availableLocales, true)
         ) {
             App::setLocale(session('locale'));
-        }
-        // 2️⃣ User locale (fallback)
-        elseif (
+        } elseif (
             Auth::check() &&
             Auth::user()->locale &&
             in_array(Auth::user()->locale, $availableLocales, true)
         ) {
             App::setLocale(Auth::user()->locale);
-        }
-        // 3️⃣ App default
-        else {
+        } else {
             App::setLocale(config('app.locale'));
         }
 
