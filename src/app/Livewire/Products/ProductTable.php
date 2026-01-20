@@ -7,7 +7,6 @@ use Illuminate\Support\Facades\Session;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Livewire\Component;
 use Livewire\WithPagination;
-use Livewire\Attributes\On;
 use Livewire\Attributes\Url;
 
 class ProductTable extends Component
@@ -17,6 +16,8 @@ class ProductTable extends Component
 
     protected string $paginationTheme = 'tailwind';
     protected string $sessionKey = 'products.filters';
+
+    public const LOW_STOCK_THRESHOLD = 5;
 
     #[Url]
     public bool $showTrashed = false;
@@ -40,6 +41,15 @@ class ProductTable extends Component
         }
     }
 
+    protected function storeFilters(): void
+    {
+        Session::put($this->sessionKey, [
+            'filterName' => $this->filterName,
+            'filterPrice' => $this->filterPrice,
+            'filterStock' => $this->filterStock,
+        ]);
+    }
+
     public function updatedFilterName(): void
     {
         $this->resetPage();
@@ -58,71 +68,22 @@ class ProductTable extends Component
         $this->storeFilters();
     }
 
-    protected function storeFilters(): void
+    /**
+     * Add product to cart (logged users only)
+     */
+    public function addToCart(int $productId): void
     {
-        Session::put($this->sessionKey, [
-            'filterName' => $this->filterName,
-            'filterPrice' => $this->filterPrice,
-            'filterStock' => $this->filterStock,
-        ]);
-    }
-
-    public function toggleTrash(): void
-    {
-        $this->authorize('create', Product::class);
-
-        $this->showTrashed = ! $this->showTrashed;
-        $this->resetPage();
-    }
-
-    public function sortBy(string $field): void
-    {
-        if ($this->sortField === $field) {
-            $this->sortDirection = $this->sortDirection === 'asc' ? 'desc' : 'asc';
-        } else {
-            $this->sortField = $field;
-            $this->sortDirection = 'asc';
+        if (! auth()->check()) {
+            return;
         }
 
-        $this->resetPage();
-    }
-
-    public function restore(int $id): void
-    {
-        $product = Product::onlyTrashed()->findOrFail($id);
-
-        $this->authorize('restore', $product);
-
-        $product->restore();
-        $this->resetPage();
-    }
-
-    public function delete(int $id): void
-    {
-        $product = Product::findOrFail($id);
-
-        $this->authorize('delete', $product);
-
-        $product->delete();
-        $this->resetPage();
-    }
-
-    #[On('product.saved')]
-    public function refresh(): void
-    {
-        $this->resetPage();
+        $this->dispatch('cart.add', $productId);
     }
 
     public function render()
     {
-        $query = Product::query();
-
-        if ($this->showTrashed) {
-            $query->onlyTrashed();
-        }
-
         return view('livewire.products.product-table', [
-            'products' => $query
+            'products' => Product::query()
                 ->when($this->filterName !== '', fn ($q) =>
                     $q->where('name', 'like', "%{$this->filterName}%")
                 )
@@ -137,6 +98,8 @@ class ProductTable extends Component
 
             'canManage' => auth()->check()
                 && auth()->user()->can('create', Product::class),
+
+            'lowStockThreshold' => self::LOW_STOCK_THRESHOLD,
         ]);
     }
 }

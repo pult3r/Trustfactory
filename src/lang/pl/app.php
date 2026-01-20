@@ -3,7 +3,7 @@
 return [
 
     'common' => [
-        'dashboard' => 'Panel',
+        'dashboard' => 'Dashboard',
         'loading' => 'Ładowanie...',
         'cancel' => 'Anuluj',
     ],
@@ -35,6 +35,11 @@ return [
             'show_active' => 'Pokaż aktywne',
         ],
 
+        'stock' => [
+            'low' => 'Niski stan',
+            'out' => 'Brak w magazynie',
+        ],
+
         'empty' => 'Brak produktów.',
     ],
 
@@ -49,7 +54,7 @@ return [
         'login' => 'Zaloguj się',
         'register' => 'Zarejestruj się',
         'logout' => 'Wyloguj się',
-        'email' => 'E-mail',
+        'email' => 'Email',
         'password' => 'Hasło',
         'confirm_password' => 'Potwierdź hasło',
     ],

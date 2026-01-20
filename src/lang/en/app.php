@@ -35,6 +35,11 @@ return [
             'show_active' => 'Show active',
         ],
 
+        'stock' => [
+            'low' => 'Low stock',
+            'out' => 'Out of stock',
+        ],
+
         'empty' => 'No products found.',
     ],
 

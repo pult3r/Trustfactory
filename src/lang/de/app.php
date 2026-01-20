@@ -4,7 +4,7 @@ return [
 
     'common' => [
         'dashboard' => 'Dashboard',
-        'loading' => 'Laden...',
+        'loading' => 'Wird geladen...',
         'cancel' => 'Abbrechen',
     ],
 
@@ -33,6 +33,11 @@ return [
             'restore' => 'Wiederherstellen',
             'show_trash' => 'Papierkorb anzeigen',
             'show_active' => 'Aktive anzeigen',
+        ],
+
+        'stock' => [
+            'low' => 'Niedriger Bestand',
+            'out' => 'Nicht verfügbar',
         ],
 
         'empty' => 'Keine Produkte gefunden.',
